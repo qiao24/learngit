@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>page</title>
+	<link rel="stylesheet" href="jquery-page.css">
+	<script src="jquery-1.11.3.js"></script>
+	<script src="jquery-page.js"></script>
+</head>
+<body>
+	<div id="page" class="page-footer"></div>
+	<script>
+		
+		//加载数据文件
+		function getGoods(page) {
+			$.ajax({
+				type: "get",
+				async: true,
+				url: "http://search.mall.360.com/search/q?sort=weight&q=*&page=" + page,
+				dataType: "jsonp",
+				jsonp: "callback",
+				success: function(data) {
+					$("#productsList").html("");
+					for (key in data.data.list) {
+						$("#productsList").append('<li>\
+							<div class="list-product-card">\
+								<dl>\
+									<dt>\
+										<a href="showitem.html?item_id=' + data.data.list[key].itemId + '" target="_blank">\
+											<img class="oGoodImg" src="' + data.data.list[key].img + '"/>\
+											<span class="oGoodId">' + data.data.list[key].itemId + '</span>\
+										</a>\
+									</dt>\
+									<dd>\
+										<a href="showitem.html?item_id=' + data.data.list[key].itemId + '" target="_blank">\
+											<span class="oGoodName">' + data.data.list[key].title + '</span>\
+											<b class="oGoodPrice">' + data.data.list[key].price / 100 + '元</b>\
+										</a>\
+									</dd>\
+								</dl>\
+							</div>\
+						</li>');
+					}
+				}
+
+			});
+		}
+		getGoods(0);
+
+
+
+		$("#page").createPage({
+			pageCount: 50,
+			current: 1,
+			backFn: function(number) {
+				getGoods(number - 1);
+			}
+		})
+	</script>
+</body>
+</html>
